@@ -1,47 +1,47 @@
 var app = function(){
-  var url = 'http://api.football-data.org/v1/competitions/';
-  bindEvents();
-  makeRequest("GET", url, requestComplete);
+  var url = 'http://api.football-data.org/v1/competitions/426/leagueTable';
+  makeRequest(url, requestComplete);
 }
 
-var bindEvents = function() {
-  var searchQuery = document.getElementById('search-query');
-  var competitionsDiv = document.getElementById('compList');
+// var bindEvents = function() {
+//   var searchQuery = document.getElementById('search-query');
+//   var competitionsDiv = document.getElementById('compList');
 
-  searchQuery.onkeyup = function() {
-  var jsonString = this.responseText;
-  var competitions = JSON.parse(jsonString);
-    competitionsDiv.innerHTML = '';
-    var url = 'http://api.football-data.org/v1/competitions/' + competitions.id + '/leagueTable'
-    makeRequest("GET", url, requestComplete);
-  }
-}
+//   searchQuery.onkeyup = function() {
+//   var jsonString = this.responseText;
+//   var competitions = JSON.parse(jsonString);
+//     competitionsDiv.innerHTML = '';
+//     var url = 'http://api.football-data.org/v1/competitions/426/leagueTable'
+//     makeRequest("GET", url, requestComplete);
+//   }
+// }
 
-var makeRequest = function (method, url, callback) {
+var makeRequest = function (url, callback) {
   var request = new XMLHttpRequest();
   request.open('GET', url);
   request.onload = callback;
   request.send();
 }
 
-var display = function(competitions){
-  var container = document.getElementById('compList');
+var display = function(teams){
+  var container = document.querySelector('#premLeague');
+  console.log(teams);
+  teams.forEach( function(team) {
+    
+    var teamName = document.createElement('p')
+    teamName.innerText = team.teamName;
+    container.appendChild(teamName)
 
-  for (competition of competitions) {
-    var div = document.createElement('div');
-    div.className = "competition";
-    div.innerHTML = "<a href='https://www.google.co.uk/search?q= '>"  + competition.caption + "</a>";
-    container.appendChild(div)
-  }
+    
+  });
 }
 
 var requestComplete = function () {
   if (this.status !== 200) return;
   var jsonString = this.responseText;
-  var competitions = JSON.parse(jsonString);
-  // var competitionsList = competitions;
-  // console.log(competitions)
-  display(competitions);
+  var league = JSON.parse(jsonString);
+  teams = league.standing;
+  display(teams);
 };
 
   window.onload = app;
